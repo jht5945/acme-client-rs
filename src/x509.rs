@@ -11,6 +11,7 @@ lazy_static! {
     static ref OID_COMMON_NAME: Oid<'static> = Oid::from_str("2.5.4.3").unwrap();
     static ref OID_RSA_WITH_SHA256: Oid<'static> = Oid::from_str("1.2.840.113549.1.1.11").unwrap();
     static ref OID_ECDSA_WITH_SHA256: Oid<'static> = Oid::from_str("1.2.840.10045.4.3.2").unwrap();
+    static ref OID_ECDSA_WITH_SHA384: Oid<'static> = Oid::from_str("1.2.840.10045.4.3.3").unwrap();
 
     static ref OID_EC_PUBLIC_KEY: Oid<'static> = Oid::from_str("1.2.840.10045.2.1").unwrap();
     static ref OID_RSA_PUBLIC_KEY: Oid<'static> = Oid::from_str("1.2.840.113549.1.1.1").unwrap();
@@ -24,6 +25,7 @@ lazy_static! {
 pub enum X509IssuerAlgo {
     RsaWithSha256,
     EcdsaWithSha256,
+    EcdsaWithSha384,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -142,6 +144,8 @@ pub fn parse_x509(pem_id: &str, pem: &str) -> XResult<X509Certificate> {
         X509IssuerAlgo::RsaWithSha256
     } else if cert_algorithm_oid == &*OID_ECDSA_WITH_SHA256 {
         X509IssuerAlgo::EcdsaWithSha256
+    }  else if cert_algorithm_oid == &*OID_ECDSA_WITH_SHA384 {
+        X509IssuerAlgo::EcdsaWithSha384
     } else {
         return simple_error!("Parse pem: {}, unknown x509 algorithm oid: {:?}", pem_id, cert_algorithm_oid);
     };
